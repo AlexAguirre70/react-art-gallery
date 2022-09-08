@@ -1,8 +1,12 @@
 import React, {useState,useEffect} from "react";
 
-function Gallery() {
+function Gallery(props) {
     return(
-        <h1> Gallery Placeholder</h1>
+        <div>
+            <img src={props.objectImg} alt={props.title}></img>
+            <p> {props.artist}</p>
+        </div>
+        
 
 
     )
