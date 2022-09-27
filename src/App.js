@@ -1,37 +1,43 @@
 import './App.css';
-import Gallery from './Gallery'
-import ButtonBar from './ButtonBar'
-import { useSelector,useDispatch } from 'react-redux';
-import { darkMode,lightMode} from './features/modelSlice';
-import { useState,useEffect } from 'react';
+import { useSelector, useDispatch, connect } from 'react-redux'
+import { clearData, fetchData, incrementId, decrementId, inputId } from './features/dataSlice'
+import { useEffect } from 'react';
 
-const App=()=> {
-  let [data,setData]= useState({})
-  let [artId,setartId] =useState(12720)
-  const dispatch =useDispatch()
-  const mode = useSelector((state)=>state.mode)
+const mapStateToProps = (state, ownProps) => ({ objectId: state.data.objectId })
 
-  const toggleMode =()=> {
-    mode.darkMode ? dispatch(lightMode()): dispatch(darkMode())
+function App(props) {
+  const dispatch = useDispatch()
+  const data = useSelector((state) => state.data)
+  console.log(data.apiData.primaryImage,data.apiData.src)
+  const renderImg = () => {
+    if(data.apiData) {
+      return <img style={{'width': '100vw'}} src={data.apiData.primaryImage} alt={data.apiData.title} />
+    } else {
+      return <p>image here</p>
+    }
   }
 
-  useEffect (() =>{
-    document.title = 'Welcome to Artworld'
-    fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${artId}`)
-    .then(response =>response.json())
-    .then(resData=> setData (resData))
-  },[artId] )
-  const handleIterate=(e)=>{
-    setartId(artId+Number(e.target.value))
-  }
+  useEffect(() => {
+    dispatch(fetchData())
+  }, [props.objectId, dispatch])
+
   return (
-    <div className="App" style={{backgroundColor:mode.color1, color:'white'}}>
-    <Gallery objectImg={data.primaryImage} artist={data.artistDisplayName} title={data.title} />
-  
-    <ButtonBar handleIterate={handleIterate}/>
-    <button onClick={toggleMode}>{mode.darkMode ? 'Ligth Mode' : 'Dark Mode'}</button>
+    <div className="App">
+      <div>
+        <button onClick={() => dispatch(fetchData())}>Thunk!</button>
+        <button onClick={() => dispatch(clearData())}>Clear</button>
+        <button onClick={() => dispatch(incrementId())}>Next</button>
+        <button onClick={() => dispatch(decrementId())}>Back</button>
+      </div>
+      <input value={ data.objectId } onChange={(e) => {
+        dispatch(inputId(Number(e.target.value)))
+      }} />
+      <div>
+        {data.objectId}
+        {renderImg()}
+      </div>
     </div>
   );
 }
 
-export default App;
+export default connect(mapStateToProps)(App);

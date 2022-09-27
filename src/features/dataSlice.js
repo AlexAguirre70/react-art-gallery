@@ -16,20 +16,20 @@ export const dataSlice = createSlice({
             return initialState
         },
         inputId: (state, action) =>{
-            return{...state,objectId: action.paylod}
+            return{...state,objectId: action.payload}
         },
         incrementId: (state) => {
-            return{...state, objectId: state.payload +1}
+            return{...state, objectId: state.objectId +1}
         },
         decrementId: (state)=> {
-            return {...state, objectId: state.payload -1}
+            return {...state, objectId: state.objectId -1}
         }
     }
 
 })
 export const{setData,clearData, incrementId,decrementId, inputId} = dataSlice.actions
 
-export const  fetchdata = ()=>{
+export const  fetchData = ()=>{
     const fetchDataThunk = async (dispatch, getState)=>{
         let state =getState()
         const response = await  fetch (`https://collectionapi.metmuseum.org/public/collection/v1/objects/${state.data.objectId}`)

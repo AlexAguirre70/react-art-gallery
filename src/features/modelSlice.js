@@ -12,7 +12,7 @@ const mode1 = {
 
 const mode2 = {
     darkMode: false,
-    color1: '#6E44FF',
+    color1: '#ff6c2c',
     color2: '#B892FF',
     color3: '#FFC2E2',
     color4: '#FF90B3',
